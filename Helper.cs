@@ -20,5 +20,38 @@ namespace server
 
             Console.WriteLine($"Server started. Listening to TCP client on {port}");
         }
+
+        public static void Listen ()
+        {
+            if (listener != null && accept)
+            {
+                while (true)
+                {
+                    Console.WriteLine("Waiting for client...");
+                    var clientTask = listener.AcceptTcpClientAsync();
+
+                    if (clientTask.Result != null)
+                    {
+                        Console.WriteLine("Client connected. Waiting for data.");
+                        var client = clientTask.Result;
+                        string message = "";
+
+                        while (message != null && !message.StartsWith("quit"))
+                        {
+                            byte[] data = Encoding.ASCII.GetBytes("Send next data: [enter 'quit' to terminate] ");
+                            client.GetStream().Write(data, 0, data.Length);
+
+                            byte[] buffer = new byte[1024];
+                            client.GetStream().Read(buffer, 0, buffer.Length);
+
+                            message = Encoding.ASCII.GetString(buffer);
+                            Console.WriteLine(message);
+                        }
+                        Console.WriteLine("Closing connection.");
+                        client.GetStream().Dispose();
+                    }
+                }
+            }
+        }
     }
 }

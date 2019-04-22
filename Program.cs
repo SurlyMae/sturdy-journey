@@ -7,7 +7,7 @@ namespace server
         static void Main(string[] args)
         {
             TcpHelper.StartServer(5789);
-            
+            TcpHelper.Listen();
         }
     }
 }
