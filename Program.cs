@@ -132,5 +132,17 @@ namespace server
             } while (true);
         }
 
+        private static void Broadcast (string text)
+        {
+            Console.WriteLine(text);
+            foreach (var client in connections)
+            {
+                if (client.Key != Thread.CurrentThread.ManagedThreadId)
+                {
+                    State state = client.Value;
+                    state.Send(text);
+                }
+            }
+        }
     }
 }
