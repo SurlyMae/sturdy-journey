@@ -19,5 +19,20 @@ namespace server
             serverThread = new Thread(new ThreadStart(Listen));
             serverThread.Start();
         }
+
+        private static void Listen ()
+        {
+            listener.Start();
+            Console.WriteLine("Server has started.");
+
+            while (true)
+            {
+                Console.WriteLine("Server is waiting...");
+                TcpClient client = listener.AcceptTcpClient();
+                Console.WriteLine("Server waited.");
+                
+                Thread clientThread = new Thread(new ParameterizedThreadStart(ManageClient));
+                clientThread.Start(client);            }
+        }
     }
 }
