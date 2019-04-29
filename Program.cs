@@ -67,7 +67,7 @@ namespace server
                     foreach (var connection in connections)
                     {
                         var state = connection.Value;
-                        if (state.Name == clientName)
+                        if (state.ClientName == clientName)
                         {
                             getClientName = Encoding.ASCII.GetBytes("That name has already been registered. Please enter another: ");
                             client.GetStream().Write(getClientName, 0, getClientName.Length);
