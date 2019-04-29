@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 
 namespace server
 {
     class Program
     {
-        static void Main(string[] args)
-        {
-            TcpHelper.StartServer(5789);
-            TcpHelper.Listen();
-        }
+
     }
 }
