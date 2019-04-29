@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks.Dataflow;
+﻿using System.Diagnostics;
+using System.Threading.Tasks.Dataflow;
 using System.Net;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ namespace server
     {
         static TcpListener listener;
         static Thread serverThread;
-
         static Dictionary<int, State> connections = new Dictionary<int, State>();
         public static void Main (string[] args)
         {
@@ -104,5 +104,33 @@ namespace server
             client.Close();
             currentThread.Abort();
         }
+
+        private static string Receive (TcpClient client)
+        {
+            var sb = new StringBuilder();
+            do
+            {
+                if (client.Available > 0)
+                {
+                    while (client.Available > 0)
+                    {
+                        var ch = (char)client.GetStream().ReadByte();
+                        
+                        if (ch == '\r')
+                        {
+                            continue;
+                        }
+
+                        if (ch == '\n')
+                        {
+                            return sb.ToString();
+                        }
+                        sb.Append(ch);
+                    }
+                }
+                Thread.Sleep(100);
+            } while (true);
+        }
+
     }
 }
