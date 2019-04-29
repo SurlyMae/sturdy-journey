@@ -11,11 +11,7 @@ using server.Utilities;
 namespace server
 {
     class Program
-    {
-        
-        // static TcpListener listener;
-        // static Thread serverThread;
-        // static Dictionary<int, State> connections = new Dictionary<int, State>();
+    {    
         public static void Main (string[] args)
         {
             TcpHelper.StartServer(80);

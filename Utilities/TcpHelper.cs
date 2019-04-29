@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using server;
 
 namespace server.Utilities
 {
@@ -13,7 +14,7 @@ namespace server.Utilities
     {
         private static TcpListener listener { get; set; }
         private static Thread serverThread { get; set; }
-        static Dictionary<int, State> connections = new Dictionary<int, State>();
+        static Dictionary<int, ClientInfo> connections = new Dictionary<int, ClientInfo>();
 
         public static void StartServer (int port)
         {
@@ -31,15 +32,14 @@ namespace server.Utilities
         private static void Listen ()
         {
             listener.Start();
-            Console.WriteLine("Server has started.");
+            Broadcast("Server has started.");
 
             while (true)
             {
-                Console.WriteLine("Server is waiting...");
-                TcpClient client = listener.AcceptTcpClient();
-                Console.WriteLine("Server waited.");
+                Broadcast("Server is waiting...");
+                TcpClient client = listener.AcceptTcpClient();                
                 
-                Thread clientThread = new Thread(new ParameterizedThreadStart(ManageClient));
+                Thread clientThread = new Thread(ManageClient);
                 clientThread.Start(client);            
             }
         }
@@ -48,8 +48,8 @@ namespace server.Utilities
         {
             TcpClient client = (TcpClient)oClient;
             var currentThread = Thread.CurrentThread;
-            //Console.WriteLine("Client (Thread {0}) Connected.", Thread.CurrentThread.ManagedThreadId);
-            Console.WriteLine("Client (Thread {0}) Connected.", currentThread.ManagedThreadId);
+            
+            Broadcast($"Client connected on thread {currentThread.ManagedThreadId}.");
 
             byte[] getClientName = Encoding.ASCII.GetBytes("Enter name: ");
             client.GetStream().Write(getClientName, 0, getClientName.Length);
@@ -61,7 +61,7 @@ namespace server.Utilities
             {
                 if (!client.Connected)
                 {
-                    Console.WriteLine("Client (Thread {0}) Terminated.", currentThread.ManagedThreadId);
+                    Broadcast($"Client disconnected on thread {currentThread.ManagedThreadId}.");
                     client.Close();
                     //determine safe way to abort thread                    
                 }
@@ -84,9 +84,9 @@ namespace server.Utilities
                 }
             } while (!done);
 
-            connections.Add(currentThread.ManagedThreadId, new State(clientName, client));
-            Console.WriteLine("\tTotal connections: {0}", connections.Count);
-            Broadcast(string.Format("~~~ {0} has arrived ~~~", clientName));
+            connections.Add(currentThread.ManagedThreadId, new ClientInfo(clientName, client));
+            Broadcast($"\tTotal connections: {connections.Count}");
+            Broadcast($"~~~ {clientName} has arrived ~~~");
 
             do
             {
@@ -94,9 +94,9 @@ namespace server.Utilities
                 
                 if (textFromClient == "/quit")
                 {
-                    Broadcast(string.Format("~~~ {0} has departed ~~~", clientName));
+                    Broadcast($"~~~ {clientName} has departed ~~~");
                     connections.Remove(currentThread.ManagedThreadId);
-                    Console.WriteLine("\tTotal Connections: {0}", connections.Count);
+                    Broadcast($"\tTotal connections: {connections.Count}");
                     break;
                 }
 
@@ -104,10 +104,10 @@ namespace server.Utilities
                 {
                     break;
                 }
-                Broadcast(string.Format("{0}> {1}", clientName, textFromClient));
+                Broadcast($"{clientName}> {textFromClient}");
             } while (true);
 
-            Console.WriteLine("Client (Thread {0}) Terminated.", currentThread.ManagedThreadId);
+            Console.WriteLine($"Client disconnected at thread {currentThread.ManagedThreadId}.");
             client.Close();
             //determine safe way to abort thread
         }
@@ -142,14 +142,14 @@ namespace server.Utilities
         private static void Broadcast (string text)
         {
             Console.WriteLine(text);
-            foreach (var client in connections)
-            {
-                if (client.Key != Thread.CurrentThread.ManagedThreadId)
-                {
-                    State state = client.Value;
-                    state.Send(text);
-                }
-            }
+            // foreach (var client in connections)
+            // {
+            //     if (client.Key != Thread.CurrentThread.ManagedThreadId)
+            //     {
+            //         ClientInfo state = client.Value;
+            //         state.Send(text);
+            //     }
+            // }
         }
     }
 }
