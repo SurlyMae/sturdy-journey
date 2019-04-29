@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Threading.Tasks.Dataflow;
+using System.Net;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -32,7 +33,8 @@ namespace server
                 Console.WriteLine("Server waited.");
                 
                 Thread clientThread = new Thread(new ParameterizedThreadStart(ManageClient));
-                clientThread.Start(client);            }
+                clientThread.Start(client);            
+            }
         }
 
         private static void ManageClient (object oClient)
@@ -74,6 +76,33 @@ namespace server
                     }
                 }
             } while (!done);
+
+            connections.Add(currentThread.ManagedThreadId, new State(clientName, client));
+            Console.WriteLine("\tTotal connections: {0}", connections.Count);
+            Broadcast(string.Format("~~~ {0} has arrived ~~~", clientName));
+
+            do
+            {
+                var textFromClient = Receive(client);
+                
+                if (textFromClient == "/quit")
+                {
+                    Broadcast(string.Format("~~~ {0} has departed ~~~", clientName));
+                    connections.Remove(currentThread.ManagedThreadId);
+                    Console.WriteLine("\tTotal Connections: {0}", connections.Count);
+                    break;
+                }
+
+                if (!client.Connected)
+                {
+                    break;
+                }
+                Broadcast(string.Format("{0}> {1}", clientName, textFromClient));
+            } while (true);
+
+            Console.WriteLine("Client (Thread {0}) Terminated.", currentThread.ManagedThreadId);
+            client.Close();
+            currentThread.Abort();
         }
     }
 }
