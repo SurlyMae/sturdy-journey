@@ -2,11 +2,13 @@
 C# chat server
 
 ## How to use
-Install the .NET Core 2.2 SDK on your machine. Find your download [here](https://dotnet.microsoft.com/download)
+Install the .NET Core 2.2 SDK on your machine. Find your download [here](https://dotnet.microsoft.com/download).
 
-```git clone``` the repo onto your machine  
+Pull the repo onto your machine via fork or clone.
 
-From the sturdy-journey folder, execute ```dotnet run```. 
+Navigate to the newly-created ```sturdy-journey``` directory. 
+
+From the terminal and in the sturdy-journey directory, execute ```dotnet run```. 
 
 ```bash
 $ dotnet run
