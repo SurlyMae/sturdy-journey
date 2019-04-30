@@ -14,7 +14,7 @@ namespace server.Utilities
     {
         private static TcpListener listener { get; set; }
         private static Thread serverThread { get; set; }
-        static Dictionary<int, ClientInfo> connections = new Dictionary<int, ClientInfo>();
+        private static Dictionary<int, ClientInfo> connections = new Dictionary<int, ClientInfo>();
 
         public static void StartServer (int port)
         {
