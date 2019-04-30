@@ -34,6 +34,7 @@ For additional users, repeat the opening of an additional terminal window and co
 - Remaining TODOs:
   - Relaying messages back to client's window, rather than just on the server
   - Displaying to users the command they need to quit
+  - Injecting IP address and port dependencies, instead of hard-coding
   - More refactoring
   - Exception handling
   - Unit tests
