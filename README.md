@@ -18,13 +18,13 @@ $ Server is waiting...
 ```
 Open a second terminal window and, using your preferred LAN protocol (i.e. Telnet, netcat), open a connection to your localhost using port 44000:
 
-Telnet example: ```o 127.0.0.1 44000```  
-Netcat example: ```$nc 127.0.0.1 44000```
+Telnet example: ```$ o 127.0.0.1 44000```  
+Netcat example: ```$ nc 127.0.0.1 44000```
 
 You should see:
 
 ```bash
-$Enter name:
+$ Enter name:
 ```
 Enter a handle for yourself and start typing messages. Watch the original terminal window for feedback. 
 
