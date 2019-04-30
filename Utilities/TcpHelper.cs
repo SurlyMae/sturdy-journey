@@ -32,8 +32,7 @@ namespace server.Utilities
         {
             listener.Start();
             Broadcast("Server has started.");
-
-            while (true)
+            while(true)
             {
                 Broadcast("Server is waiting...");
                 TcpClient client = listener.AcceptTcpClient();                
@@ -52,14 +51,15 @@ namespace server.Utilities
 
         private static void ManageClient (object oClient)
         {
+            //still need to refactor this method, it has way too much going on
             TcpClient client = (TcpClient)oClient;                        
             var threadId = Thread.CurrentThread.ManagedThreadId;
             Encoding ascii = Encoding.ASCII;
             
             Broadcast($"Client connected on thread {threadId}.");
 
-            byte[] getClientName = ascii.GetBytes("Enter name: ");
-            client.GetStream().Write(getClientName, 0, getClientName.Length);
+            byte[] bytes = ascii.GetBytes("Enter name: ");
+            client.GetStream().Write(bytes, 0, bytes.Length);
 
             var clientName = "";
             var done = false;
@@ -73,18 +73,19 @@ namespace server.Utilities
                     //determine safe way to abort thread                    
                 }
 
-                clientName = Receive(client);
+                clientName = GetInput(client);
                 done = true;
 
                 if (done)
                 {
                     foreach (var connection in connections)
                     {
-                        var state = connection.Value;
-                        if (state.ClientName == clientName)
+                        var clientInfo = connection.Value;
+                        
+                        if (clientInfo.ClientName == clientName)
                         {
-                            getClientName = ascii.GetBytes("That name has already been registered. Please enter another: ");
-                            client.GetStream().Write(getClientName, 0, getClientName.Length);
+                            bytes = ascii.GetBytes("That name has already been registered. Please enter another: ");
+                            client.GetStream().Write(bytes, 0, bytes.Length);
                             done = false;
                         }
                     }
@@ -97,7 +98,7 @@ namespace server.Utilities
 
             do
             {
-                var textFromClient = Receive(client);
+                var textFromClient = GetInput(client);
                 
                 if (textFromClient == "/quit")
                 {
@@ -119,7 +120,7 @@ namespace server.Utilities
             //determine safe way to abort thread
         }
 
-        private static string Receive (TcpClient client)
+        private static string GetInput (TcpClient client)
         {
             var sb = new StringBuilder();
             do
