@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -99,6 +100,7 @@ namespace server.Utilities
             do
             {
                 var textFromClient = GetInput(client);
+                var timestamp = DateTime.Now;
                 
                 if (textFromClient == "/quit")
                 {
@@ -112,7 +114,7 @@ namespace server.Utilities
                 {
                     break;
                 }
-                Broadcast($"{clientName}> {textFromClient}");
+                Broadcast($"{clientName} @ {timestamp}> {textFromClient}");
             } while (true);
 
             Broadcast($"Client disconnected at thread {threadId}.");
