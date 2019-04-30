@@ -19,7 +19,7 @@ more info needed here
 - There are many TODOs remaining:
   - More abstraction
   - Exception handling
-  - Displaying to users the command they need to quit.
+  - Displaying to users the command they need to quit
   - Unit tests
 
 ## Credits
