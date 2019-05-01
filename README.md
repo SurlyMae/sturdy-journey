@@ -28,9 +28,9 @@ $ Enter name:
 ```
 Enter a handle for yourself and start typing messages. Watch the original terminal window for feedback. 
 
-For additional users, repeat the opening of an additional terminal window and connection.
+Enter the message ```/quit``` to disconnect the client.
 
-Type ```/quit``` to disconnect the client.
+For additional users, repeat the opening of an additional terminal window and connection.
 
 ## Notes
 - Remaining TODOs:
