@@ -30,6 +30,8 @@ Enter a handle for yourself and start typing messages. Watch the original termin
 
 For additional users, repeat the opening of an additional terminal window and connection.
 
+Type ```/quit``` to disconnect the client.
+
 ## Notes
 - Remaining TODOs:
   - Relaying messages back to client's window, rather than just on the server
